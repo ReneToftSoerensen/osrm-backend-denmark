@@ -1,12 +1,13 @@
-FROM osrm/osrm-backend
+FROM osrm/osrm-backend as builder
 
-ADD http://glunimore.geofabrik.de/europe/denmark-latest.osm.pbf ./
+RUN mkdir -p /data
+ADD http://glunimore.geofabrik.de/europe/denmark-latest.osm.pbf /data
+RUN osrm-extract -p /opt/car.lua /data/denmark-latest.osm.pbf &&  osrm-partition /data/denmark-latest.osrm &&  osrm-customize /data/denmark-latest.osrm && rm /data/denmark-latest.osm.pbf
 
-RUN osrm-extract -p /opt/car.lua ./denmark-latest.osm.pbf 
-RUN osrm-partition ./denmark-latest.osrm
-RUN osrm-customize ./denmark-latest.osrm
-RUN rm ./denmark-latest.osm.pbf
+FROM osrm/osrm-backend as runstage
 
+RUN mkdir -p /data
+COPY --from=builder /data /data 
 
 EXPOSE 5000
-CMD osrm-routed --algorithm mld ./denmark-latest.osrm 
+CMD osrm-routed --algorithm mld /data/denmark-latest.osrm 
