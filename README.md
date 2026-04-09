@@ -1,6 +1,6 @@
 # OSRM Backend Denmark
 
-A multi-stage Docker image that provides a ready-to-use OSRM (Open Source Routing Machine) backend pre-loaded with Denmark map data from [Geofabrik](https://download.geofabrik.de/europe/denmark.html).
+A multi-stage Docker image that provides a ready-to-use OSRM (Open Source Routing Machine) backend pre-loaded with Denmark map data from [Geofabrik](https://download.geofabrik.de/europe/denmark-latest.osm.pbf).
 
 ## Description
 
@@ -41,6 +41,19 @@ You can test the routing service with a simple `curl` command or by opening the 
 
 ```bash
 curl "http://localhost:5000/route/v1/driving/12.5683,55.6761;10.2039,56.1567?overview=false"
+```
+
+### Excluding specific road classes
+
+The API supports excluding certain road classes using the `exclude` flag. The supported classes for exclusion are:
+
+- `toll`
+- `motorway`
+- `ferry`
+
+Example usage excluding ferries and tolls:
+```bash
+curl "http://localhost:5000/route/v1/driving/12.5683,55.6761;10.2039,56.1567?exclude=ferry,toll"
 ```
 
 ## License
